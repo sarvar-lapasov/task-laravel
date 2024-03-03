@@ -11,7 +11,6 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
-
         $query = Task::query();
 
         if ($request->has('status')) {
@@ -31,11 +30,11 @@ class TaskController extends Controller
                     ->orWhere('description', 'like', '%' . $search . '%');
             });
         }
-
+        
+        $query->orderBy('created_at', 'desc');
         $tasks = $query->get();
 
         return $this->response($tasks);
-       
     }
 
     public function store(StoreTaskRequest $request)
