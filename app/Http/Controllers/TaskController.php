@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\TaskService;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Http\Requests\UpdateTaskRequest;
@@ -9,30 +10,14 @@ use App\Http\Requests\StoreTaskRequest;
 
 class TaskController extends Controller
 {
+
+    public function __construct(private TaskService $taskService)
+    {
+    }
+
     public function index(Request $request)
     {
-        $query = Task::query();
-
-        if ($request->has('status')) {
-            $status = $request->get('status');
-            $query->where('completed', $status);
-        }
-
-        if ($request->has('date')) {
-            $date = $request->get('date');
-            $query->whereDate('created_at', $date);
-        }
-
-        if ($request->has('search')) {
-            $search = $request->get('search');
-            $query->where(function ($query) use ($search) {
-                $query->where('title', 'like', '%' . $search . '%')
-                    ->orWhere('description', 'like', '%' . $search . '%');
-            });
-        }
-        
-        $query->orderBy('created_at', 'desc');
-        $tasks = $query->get();
+        $tasks = $this->taskService->getTasks($request);
 
         return $this->response($tasks);
     }
