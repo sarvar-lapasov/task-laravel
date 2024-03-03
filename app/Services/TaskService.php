@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Services;
 
 use App\Models\Task;
@@ -31,8 +29,6 @@ class TaskService extends Service
             });
         }
 
-        $tasks = $query->latest('created_at')->get();
-
-        return $tasks;
+        return $query->latest('created_at')->get();
     }
 }
